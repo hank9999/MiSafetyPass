@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">MiSafetyPass</string>
+    <string name="app_summary">修改检查类型以绕过部分检查, 通过小米设备检查</string>
+</resources>
