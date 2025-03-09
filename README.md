@@ -8,6 +8,7 @@
 ## 致谢
 - [HookTool](https://github.com/HChenX/HookTool)  
 - [DexKit](https://github.com/luckypray/DexKit)  
+- 特别感谢 [@璃標](http://www.coolapk.com/u/1082152) 的研究 [手机管家中安全服务的环境检测](https://www.coolapk.com/feed/63076892)
 
 ## 许可协议
 [GPL-3.0 (GNU GENERAL PUBLIC LICENSE version 3)](LICENSE)
