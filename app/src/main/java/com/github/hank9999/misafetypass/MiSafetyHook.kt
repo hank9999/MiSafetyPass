@@ -16,7 +16,6 @@ class MiSafetyHook : BaseHC() {
     private var cResultCall: Class<*>? = null
 
     override fun init() {
-        // 获取调用充电保护设置方法
         try {
             cResultCall = mDexKit.findClass {
                 matcher {
