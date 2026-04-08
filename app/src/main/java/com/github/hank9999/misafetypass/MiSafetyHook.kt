@@ -5,7 +5,6 @@ import com.hchen.hooktool.hook.IHook
 import com.hchen.hooktool.log.XposedLog.logE
 import com.hchen.hooktool.log.XposedLog.logI
 import org.luckypray.dexkit.DexKitBridge
-import org.luckypray.dexkit.wrap.DexMethod
 
 class MiSafetyHook : BaseHC() {
 
@@ -13,57 +12,34 @@ class MiSafetyHook : BaseHC() {
         lateinit var mDexKit: DexKitBridge
     }
 
-    private var cResultCall: Class<*>? = null
-
     override fun init() {
-        try {
-            cResultCall = mDexKit.findClass {
+        val constructor = try {
+            mDexKit.findMethod {
                 matcher {
-                    usingStrings("ClientApiRequest", "binderDied: ")
+                    name("<init>")
+                    paramCount(3)
+                    paramTypes("int", null, "com.xiaomi.security.xsof.IMiSafetyDetectCallback")
+                    declaredClass {
+                        interfaces("android.os.IBinder\$DeathRecipient")
+                    }
                 }
-            }.singleOrNull()?.getInstance(classLoader)
-
-            logI(TAG, "mResultCall $cResultCall")
+            }.singleOrNull()?.getMethodInstance(classLoader)
         } catch (e: Exception) {
-            logE(TAG, "mResultCall $e")
+            logE(TAG, "findMethod failed: $e"); null
         }
 
-        if (cResultCall == null) {
-            logE(TAG, "mResultCall is null, method not found")
-            return
+        if (constructor == null) {
+            logE(TAG, "constructor not found"); return
         }
 
-        if (cResultCall?.constructors?.size != 1) {
-            logE(TAG, "mResultCall constructor not found")
-            return
-        }
-
-        val method = cResultCall?.constructors?.get(0)
-        if (method == null) {
-            logE(TAG, "mResultCall constructor not found")
-            return
-        }
-
-        hook(method, object : IHook() {
+        hook(constructor, object : IHook() {
             override fun before() {
-                logI(TAG, "before, arg length:${argsLength()}")
-                for (i in 0 until argsLength()) {
-                    logI(TAG, "arg $i: ${getArgs(i)}")
-                }
-                if (argsLength() != 3) {
-                    return
-                }
-                if (getArgs(0) == 10) {
+                if (argsLength() == 3 && getArgs(0) == 10) {
                     setArgs(0, 11)
-                    logI(TAG, "arg 0: 10 -> 11")
                 }
             }
         })
 
         logI(TAG, "MiSafetyHook success")
-    }
-
-    fun Thread.isFromMethod(method: DexMethod): Boolean {
-        return this.stackTrace.any { it.methodName == method.name && it.className == method.className }
     }
 }

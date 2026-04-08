@@ -17,19 +17,10 @@ class XposedInit : HCEntrance() {
     override fun onLoadPackage(lpparam: LoadPackageParam) {
         if ("com.miui.securitycenter" == lpparam.packageName) {
             HCInit.initLoadPackageParam(lpparam)
-            init(lpparam.packageName, lpparam)
-        }
-    }
-
-    fun init(pkg: String?, loadPackageParam: LoadPackageParam) {
-        when (pkg) {
-            "com.miui.securitycenter" -> {
-                val hostDir = loadPackageParam.appInfo.sourceDir
-                System.loadLibrary("dexkit")
-                MiSafetyHook.mDexKit = DexKitBridge.create(hostDir)
-                MiSafetyHook().onApplicationCreate().onLoadPackage()
-                MiSafetyHook.mDexKit.close()
-            }
+            System.loadLibrary("dexkit")
+            MiSafetyHook.mDexKit = DexKitBridge.create(lpparam.appInfo.sourceDir)
+            MiSafetyHook().onApplicationCreate().onLoadPackage()
+            MiSafetyHook.mDexKit.close()
         }
     }
 }

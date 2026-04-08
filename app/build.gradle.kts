@@ -9,8 +9,6 @@ val versions = mapOf(
     "api" to "82",
     "dexkit" to "2.0.2",
     "hooktool" to "v.1.1.3",
-    "annotation" to "1.9.1",
-    "preference" to "1.2.1"
 )
 
 android {
@@ -88,6 +86,4 @@ dependencies {
     compileOnly("de.robv.android.xposed:api:${versions["api"]}")
     implementation("org.luckypray:dexkit:${versions["dexkit"]}")
     implementation("com.github.HChenX:HookTool:${versions["hooktool"]}")
-    implementation("androidx.annotation:annotation:${versions["annotation"]}")
-    implementation("androidx.preference:preference-ktx:${versions["preference"]}")
 }
